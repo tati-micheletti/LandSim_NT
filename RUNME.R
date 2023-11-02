@@ -38,7 +38,7 @@ out <- SpaDES.project::setupProject(
                     "fireSense_SpreadPredict"),
                   "@development")
               )),
-  functions = "tati-micheletti/Edehzhie@master/inputs/outterFuns.R",
+  functions = "tati-micheletti/LandSim_NT@main/R/outterFuns.R",
   options = list(spades.allowInitDuringSimInit = TRUE,
                  gargle_oauth_email = if (user("tmichele")) "tati.micheletti@gmail.com" else NULL,
                  SpaDES.project.fast = TRUE,
@@ -50,15 +50,17 @@ out <- SpaDES.project::setupProject(
   studyAreaLarge = studyAreaGenerator(large = TRUE, destPath = paths[["inputPath"]]),
   rasterToMatchLarge = rtmGenerator(sA = studyAreaLarge, destPath = paths[["inputPath"]]),
   sppEquiv = sppEquiv_CA(runName),
+  # fireSense_spreadFormula = "~ 0 + youngAge + MDC + class2 + class3 + nonForest_highFlam + nonForest_lowFlam", # Being created by fireSense_dataPrepFit
   params = list(.globals = list(sppEquivCol = runName,
                                 dataYear = "2011",
                                 .plots = NA,
                                 .plotInitialTime = NA,
                                 .useCache = c(".inputObjects", "init")),
-                fireSense_SpreadFit = list(lower = c(0.22, 0.001, rep(-16, times = 6)),
-                                           upper = c(c(0.29, 10, rep(32, times = 6)))),
+                fireSense_SpreadFit = list(# Values from WBI
+                # maxAsymptote, hillSlope1, inflectionPoint1, MDC, youngAge, class2, class3, nonForest_highFlam, nonForest_lowFlam
+                                           lower = c(0.25, 0.2, 0.1, c(0, rep(-4, times = 5))), 
+                                           upper = c(0.276, 2, 4, c(4, 0, rep(4, times = 4)))),
                 canClimateData = list(.runName = runName,
-                                      .useCache = ".inputObjects",
                                       climateGCM = "CanESM5",
                                       climateSSP = "370",
                                       historicalFireYears = 1991:2020)
