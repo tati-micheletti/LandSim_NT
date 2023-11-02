@@ -48,7 +48,6 @@ po/*~
 # inputs and outputs
 /inputs/
 /outputs/
-!/inputs/outterFuns.R
 
 # RStudio Connect folder
 rsconnect/
