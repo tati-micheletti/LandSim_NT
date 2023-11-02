@@ -1,5 +1,5 @@
 studyAreaGenerator <- function(url = NULL, destPath = NULL, Crs = NULL, large = FALSE){
-  if (is.null(url))
+  if (is.null(url)) # Edehzhie study area
     url <- "https://drive.google.com/open?id=1fYvNPwovjNtTABoGcegrvdFGkNfCUsxf"
   if (is.null(destPath))
     destPath <- tempdir()
@@ -20,7 +20,7 @@ studyAreaGenerator <- function(url = NULL, destPath = NULL, Crs = NULL, large = 
   return(studyArea)
 }
 rtmGenerator <- function(url = NULL, destPath = NULL, Crs = NULL, sA = NULL){
-  if (is.null(url))
+  if (is.null(url)) # NWT raster to match
     url <- "https://drive.google.com/file/d/11yCDc2_Wia2iw_kz0f0jOXrLpL8of2oM"
   if (is.null(destPath))
     destPath <- tempdir()
