@@ -48,6 +48,7 @@ po/*~
 # inputs and outputs
 /inputs/
 /outputs/
+/tmp/
 
 # RStudio Connect folder
 rsconnect/
