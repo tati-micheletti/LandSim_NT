@@ -1,4 +1,7 @@
-studyAreaGenerator <- function(url = NULL, destPath = NULL, Crs = NULL, large = FALSE){
+studyAreaGenerator <- function(url = NULL, destPath = NULL, Crs = NULL, 
+                               large = FALSE,
+                               targetFile = "edehzhie_boundary.shp", 
+                               archive = NULL, alsoExtract = "all"){
   if (is.null(url)) # Edehzhie study area
     url <- "https://drive.google.com/open?id=1fYvNPwovjNtTABoGcegrvdFGkNfCUsxf"
   if (is.null(destPath))
@@ -6,7 +9,8 @@ studyAreaGenerator <- function(url = NULL, destPath = NULL, Crs = NULL, large = 
   if (is.null(Crs))
     Crs <- "PROJCRS[\"unknown\",\n    BASEGEOGCRS[\"unknown\",\n        DATUM[\"Unknown_based_on_GRS80_ellipsoid\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101004,\n                LENGTHUNIT[\"metre\",1],\n                ID[\"EPSG\",7019]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433,\n                ID[\"EPSG\",9122]]]],\n    CONVERSION[\"Lambert Conic Conformal (2SP)\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",-95,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",77,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]],\n        AXIS[\"northing\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]]]"
   studyArea <- reproducible::prepInputs(url = url,
-                                        targetFile = "edehzhie_boundary.shp",
+                                        archive = archive, 
+                                        targetFile = targetFile,
                                         destinationPath = destPath,
                                         fun = "terra::vect",
                                         userTags = c("objectName:studyArea"))
