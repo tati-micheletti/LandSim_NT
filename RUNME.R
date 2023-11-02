@@ -46,6 +46,8 @@ out <- SpaDES.project::setupProject(
   times = list(start = 2011,
                end = 2100),
   studyArea = studyAreaGenerator(url = "https://drive.google.com/file/d/1RPfDeHujm-rUHGjmVs6oYjLKOKDF0x09", 
+                                 archive = "NT1_BCR6.zip",
+                                 targetFile = "NT1_BCR6.shp",
                                  destPath = paths[["inputPath"]]),
   rasterToMatch = rtmGenerator(url = "https://drive.google.com/file/d/11yCDc2_Wia2iw_kz0f0jOXrLpL8of2oM",
                                sA = studyArea, destPath = paths[["inputPath"]]),
