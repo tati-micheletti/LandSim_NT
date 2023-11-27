@@ -1,7 +1,8 @@
 studyAreaGenerator <- function(url = NULL, destPath = NULL, Crs = NULL, 
                                large = FALSE,
                                targetFile = "edehzhie_boundary.shp", 
-                               archive = NULL, alsoExtract = "all"){
+                               archive = NULL, alsoExtract = "all",
+                               tags = NULL){
   if (is.null(url)) # Edehzhie study area
     url <- "https://drive.google.com/open?id=1fYvNPwovjNtTABoGcegrvdFGkNfCUsxf"
   if (is.null(destPath))
@@ -13,7 +14,7 @@ studyAreaGenerator <- function(url = NULL, destPath = NULL, Crs = NULL,
                                         targetFile = targetFile,
                                         destinationPath = destPath,
                                         fun = "terra::vect",
-                                        userTags = c("objectName:studyArea"))
+                                        userTags = c("objectName:studyArea", tags))
   studyArea <- reproducible::projectTo(from = studyArea, projectTo = Crs)
   if (large){
     studyArea <- terra::buffer(x = studyArea, width = 20000)
@@ -23,17 +24,31 @@ studyAreaGenerator <- function(url = NULL, destPath = NULL, Crs = NULL,
   }
   return(studyArea)
 }
-rtmGenerator <- function(url = NULL, destPath = NULL, Crs = NULL, sA = NULL){
+rtmGenerator <- function(url = NULL, destPath = NULL, 
+                         Crs = NULL, sA = NULL, tags = NULL,
+                         large = FALSE){
   if (is.null(url)) # NWT raster to match
     url <- "https://drive.google.com/file/d/11yCDc2_Wia2iw_kz0f0jOXrLpL8of2oM"
   if (is.null(destPath))
     destPath <- tempdir()
-  RTM <- reproducible::prepInputs(url = url,
+    RTM <- reproducible::prepInputs(url = url,
                                   destinationPath = destPath,
                                   studyArea = sA,
                                   fun = "terra::rast",
-                                  userTags = c("objectName:RTM"))
-  message(crayon::green("RTM sucessfully created!"))
+                                  userTags = c("objectName:RTM", tags))
+  if (large){
+    message(paste0("RTM is being enlarged to match the large study area large. If the study area ",
+                   "passed is smaller, the rasterToMatch will be returned unchanged, except for ",
+                   "the non-NA values, which will be converted to 1 in either case."))
+    # Here we check that if study area is larger than the raster, we enlarge it, fill it in, and 
+    # re-crop/re-mask
+    RTM <- terra::extend(RTM, terra::ext(sA)) # x is spatRaster, y = SpatExtent of study Area
+    RTM[] <- 1
+    RTM <- reproducible::postProcess(RTM,
+                                     studyArea = sA,
+                                     userTags = c("objectName:RTM", "Enlarged"))
+  }
+  message(crayon::green(paste0("RTM", ifelse(large, " large", ""), " sucessfully created!")))
   return(RTM)
 }
 sppEquiv_CA <- function(runName){
