@@ -18,7 +18,7 @@ out <- SpaDES.project::setupProject(
   paths = list(projectPath = runName,
                scratchPath = "~/scratch"),
   modules =
-    file.path("PredictiveEcology",
+    c(file.path("PredictiveEcology",
               c(paste0(# development
                   c("canClimateData",
                     "Biomass_core",
@@ -26,7 +26,7 @@ out <- SpaDES.project::setupProject(
                     "Biomass_borealDataPrep",
                     "Biomass_speciesFactorial",
                     # "Biomass_speciesParameters", # Stalls, and we don't need for now
-                    "fireSense_dataPrepFit",
+                    #"fireSense_dataPrepFit",
                     "fireSense_IgnitionFit",
                     "fireSense_EscapeFit",
                     "fireSense_SpreadFit",
@@ -36,7 +36,8 @@ out <- SpaDES.project::setupProject(
                     "fireSense_SpreadPredict"),
                   "@development")#,
               # "canClimateData@usePrepInputs"
-              )),
+              )), 
+      "tati-micheletti/fireSense_dataPrepFit@development"),
   functions = "tati-micheletti/LandSim_NT@main/R/outterFuns.R",
   options = list(spades.allowInitDuringSimInit = TRUE,
                  reproducible.cacheSaveFormat = "rds",
