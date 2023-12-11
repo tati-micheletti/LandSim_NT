@@ -12,6 +12,8 @@ getOrUpdatePkg("SpaDES.project", "0.0.8.9023")
 
 if (SpaDES.project::user("tmichele")) setwd("~/projects/LandSim_NT/")
 
+terra::terraOptions(tempdir = "~/scratch/terra")
+
 ################ SPADES CALL
 out <- SpaDES.project::setupProject(
   runName = "LandSim_NT",
@@ -20,13 +22,13 @@ out <- SpaDES.project::setupProject(
   modules =
     c(file.path("PredictiveEcology",
               c(paste0(# development
-                  c("canClimateData",
+                  c(#"canClimateData",
                     "Biomass_core",
                     "Biomass_speciesData",
                     "Biomass_borealDataPrep",
                     "Biomass_speciesFactorial",
                     # "Biomass_speciesParameters", # Stalls, and we don't need for now
-                    #"fireSense_dataPrepFit",
+                    "fireSense_dataPrepFit",
                     "fireSense_IgnitionFit",
                     "fireSense_EscapeFit",
                     "fireSense_SpreadFit",
@@ -34,26 +36,28 @@ out <- SpaDES.project::setupProject(
                     "fireSense_IgnitionPredict",
                     "fireSense_EscapePredict",
                     "fireSense_SpreadPredict"),
-                  "@development")#,
-              # "canClimateData@usePrepInputs"
-              )), 
-      "tati-micheletti/fireSense_dataPrepFit@development"),
+                  "@development"),
+               "canClimateData@leadingArea"
+              ))),
   functions = "tati-micheletti/LandSim_NT@main/R/outterFuns.R",
   options = list(spades.allowInitDuringSimInit = TRUE,
                  reproducible.cacheSaveFormat = "rds",
                  gargle_oauth_email = if (user("tmichele")) "tati.micheletti@gmail.com" else NULL,
                  SpaDES.project.fast = TRUE,
+                 reproducible.gdalwarp = TRUE,
                  reproducible.inputPaths = if (user("tmichele")) "~/data" else NULL,
                  reproducible.useMemoise = TRUE),
   times = list(start = 2011,
                end = 2100),
-  studyArea = reproducible::Cache(studyAreaGenerator,url = "https://drive.google.com/file/d/1RPfDeHujm-rUHGjmVs6oYjLKOKDF0x09", 
-                                 archive = "NT1_BCR6.zip",
-                                 targetFile = "NT1_BCR6.shp",
-                                 destPath = paths[["inputPath"]]),
-  rasterToMatch = reproducible::Cache(rtmGenerator, url = "https://drive.google.com/file/d/11yCDc2_Wia2iw_kz0f0jOXrLpL8of2oM",
-                               sA = studyArea, 
-                               destPath = paths[["inputPath"]]),
+  studyArea = reproducible::Cache(studyAreaGenerator, url = "https://drive.google.com/file/d/1RPfDeHujm-rUHGjmVs6oYjLKOKDF0x09",
+                                  archive = "NT1_BCR6.zip",
+                                  targetFile = "NT1_BCR6.shp",
+                                  large = TRUE, 
+                                  destPath = paths[["inputPath"]]),
+  rasterToMatch = reproducible::Cache(rtmGenerator, sA = studyArea, 
+                                      destPath = paths[["inputPath"]],
+                                      large = TRUE, 
+                                      tags = "RTMlarge"),
   studyAreaLarge = reproducible::Cache(studyAreaGenerator, url = "https://drive.google.com/file/d/1RPfDeHujm-rUHGjmVs6oYjLKOKDF0x09",
                                       archive = "NT1_BCR6.zip",
                                       targetFile = "NT1_BCR6.shp",
@@ -79,12 +83,13 @@ out <- SpaDES.project::setupProject(
                 canClimateData = list(.runName = runName,
                                       climateGCM = "CanESM5",
                                       climateSSP = "370",
-                                      historicalFireYears = 1991:2020)
+                                      historicalFireYears = 1991:2020,
+                                      leadingArea = "YT")
   ),
   packages = c("googledrive", 'RCurl', 'XML', 'igraph', 'qs',
                "PredictiveEcology/LandR@development (>= 1.1.0.9074)",
-               "PredictiveEcology/SpaDES.core@development (>= 2.0.3.9000)",
-               "PredictiveEcology/reproducible@development (>= 2.0.10)",
+               "PredictiveEcology/SpaDES.core@sequentialCaching (>= 2.0.3.9000)",
+               "PredictiveEcology/reproducible@modsForLargeArchives (>= 2.0.3.9002)",
                "PredictiveEcology/climateData@development (>= 1.0.4)",
                "PredictiveEcology/fireSenseUtils@development (>= 0.0.5.9053)"),
   useGit = "sub"
